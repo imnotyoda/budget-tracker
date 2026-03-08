@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Budget Tracker</title>
+  <link rel="manifest" href="manifest.json">
+  <style>
+      body {
+          font-family: sans-serif;
+          background: #f0f2f5;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          height: 100vh;
+          margin: 0;
+          color: #050505;
+      }
+      .c {
+          background: #fff;
+          padding: 20px;
+          border-radius: 10px;
+          width: 300px;
+          text-align: center;
+          box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      }
+      h3 {
+          color: #1877f2;
+          margin-bottom: 20px;
+      }
+      input {
+          width: 100%;
+          padding: 10px;
+          margin-bottom: 10px;
+          border-radius: 6px;
+          border: 1px solid #ccd0d5;
+      }
+      button {
+          width: 100%;
+          padding: 10px;
+          border: none;
+          border-radius: 6px;
+          cursor: pointer;
+          font-weight: bold;
+          margin-bottom: 10px;
+      }
+      button:first-of-type {
+          background: #1877f2;
+          color: #fff;
+      }
+      button.clr {
+          background: #e4e6eb;
+          color: #050505;
+      }
+      button:hover:first-of-type {
+          background: #166fe5;
+      }
+      button.clr:hover {
+          background: #d8dadf;
+      }
+      ul {
+          list-style: none;
+          padding: 0;
+          margin: 0;
+          max-height: 200px;
+          overflow-y: auto;
+      }
+      li {
+          display: flex;
+          justify-content: space-between;
+          padding: 8px 0;
+          border-bottom: 1px solid #ccd0d5;
+      }
+      .r {
+          color: #f02849;
+          cursor: pointer;
+          font-weight: bold;
+      }
+  </style>
+</head>
+<body>
+
+<div class="c">
+    <h3>Total: P<span id="t">0</span></h3>
+    <input type="text" id="k" placeholder="Item">
+    <input type="number" id="v" placeholder="Amount">
+    <button onclick="a()">Add</button>
+    <button class="clr" onclick="c()">Reset All</button>
+    <ul id="l"></ul>
+</div>
+
+<script>
+    const m = document.getElementById('t');
+    const u = document.getElementById('l');
+    const ik = document.getElementById('k');
+    const iv = document.getElementById('v');
+
+    function s() {
+        u.innerHTML = "";
+        let z = 0;
+        for (let i = 0; i < localStorage.length; i++) {
+            let key = localStorage.key(i);
+            let val = parseFloat(localStorage.getItem(key));
+            if (!isNaN(val)) {
+                z += val;
+                let r = document.createElement('li');
+                r.innerHTML = `${key} <span>P${val.toFixed(2)} <span class="r" onclick="x('${key}')">x</span></span>`;
+                u.appendChild(r);
+            }
+        }
+        m.innerText = z.toFixed(2);
+    }
+
+    function a() {
+        let n = ik.value;
+        let p = parseFloat(iv.value);
+        if (n && p > 0) {
+            localStorage.setItem(n, p);
+            s();
+            ik.value = '';
+            iv.value = '';
+        }
+    }
+
+    function x(key) {
+        localStorage.removeItem(key);
+        s();
+    }
+
+    function c() {
+        if(confirm("Clear all data?")) {
+            localStorage.clear();
+            s();
+        }
+    }
+
+    s();
+
+    if("serviceWorker" in navigator) {
+        navigator.serviceWorker.register("service-worker.js");
+    }
+</script>
+
+</body>
+</html>
